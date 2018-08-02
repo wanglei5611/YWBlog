@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ SITE_NAME }} - 登陆页
+{% endblock %}
+
+{% block css %}
+<style>
+    .error-message{
+        color: red;
+    }
+    .form-login{
+        width: 300px;
+        height: 300px;
+        margin: 0 auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="form-login">
+    <form action="" method="post">
+        {% csrf_token %}
+        <p>{{ loginform.username.label }} {{ loginform.username }} <span class="error-message">{{ loginform.errors.username.0 }}</span></p>
+        <p>{{ loginform.password.label }} {{ loginform.password }} <span class="error-message">{{ loginform.errors.password.0 }}</span></p>
+        <p><input type="submit" value="登陆" class="btn btn-primary"/></p>
+        <p><span class="error-message">{{ error_message }}</span></p>
+    </form>
+</div>
+{% endblock %}

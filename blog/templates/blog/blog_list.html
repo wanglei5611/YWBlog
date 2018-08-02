@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ SITE_NAME }}
+{% endblock %}
+
+{% block css %}
+<style>
+    #panel_color1 ,#panel_color2 , #panel_color3{
+            background-color: #ecd6c3;
+    }
+    a{
+        color: #c58686;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+      <div class="col-xs-0 col-sm-3 col-md-3 col-lg-2">
+        <div class="panel panel-default">
+          <div class="panel-heading" id="panel_color1">博客分类</div>
+          <div class="panel-body">
+            {% for blogtype in blog_types %}
+              <p><a href="{% url 'blog_type_list' blogtype.id %}">{{ blogtype.type_name }} ({{ blogtype.blog_count_num }})</a></p>
+             {% empty %}
+                <h3>暂无分类</h3>
+            {% endfor %}
+          </div>
+        </div>
+
+
+        <div class="panel panel-default">
+          <div class="panel-heading" id="panel_color2">日期分类</div>
+          <div class="panel-body">
+            {% for blog_date, blog_count in blog_dates.items %}
+              <p><a href="{% url 'blog_date_list' blog_date.year blog_date.month %}">{{ blog_date | date:"Y年m月" }}({{ blog_count }})</a></p>
+            {% empty %}
+                <h3>暂无分类</h3>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+
+      <div class="col-xs-12 col-sm-9  col-md-9 col-lg-10">
+          <div class="panel panel-default">
+          <div class="panel-heading" id="panel_color3">博客列表({{ total }}) 本页有({{ blogs|length }}) </div>
+          <div class="panel-body">
+            {% for blog in blogs %}
+                <div class="blog">
+                    <h3><a href="{% url 'blog_detail' blog.id %}">{{ blog.title }}</a></h3>
+                    <p>
+                        <span class="glyphicon glyphicon-list-alt" aria-hidden="true"><a href="{% url 'blog_type_list' blog.blog_type.id %}">{{ blog.blog_type }}</a></span>
+                        <span class="glyphicon glyphicon-time" aria-hidden="true">{{ blog.create_time | date:"Y-m-d H:i:s" }}</span>
+                    </p>
+                    <p>{{ blog.content | striptags | truncatechars:120 }}</p>
+                </div>
+                <hr>
+            {% empty %}
+                <div class="blog">
+                    <h3>暂无博客</h3>
+                </div>
+            {% endfor %}
+
+
+
+          <div>
+          <nav aria-label="Page navigation">
+              <ul class="pagination">
+
+              {# 判断是否具有上一页 #}
+              {% if current_page.has_previous %}
+                <li>
+                  <a href="?page={{ current_page.previous_page_number }}" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+               {% else %}
+                  <li>
+                  <a  aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                  </a>
+                </li>
+              {% endif %}
+
+              {# 循环输出页码 #}
+              {% for page_num in page_range %}
+                    {% if current_page.number == page_num %}
+                        <li class="active"><a href="?page={{ page_num }}">{{ page_num }}</a></li>
+                   {% else %}
+                        <li><a href="?page={{ page_num }}">{{ page_num }}</a></li>
+                   {% endif %}
+              {% endfor %}
+
+          {# 判断是否具有下一页 #}
+          {% if current_page.has_next %}
+                <li>
+                  <a href="?page={{ current_page.next_page_number }}" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+           {% else %}
+                <li>
+                  <a aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                  </a>
+                </li>
+          {% endif %}
+              </ul>
+            </nav>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+{% endblock %}
